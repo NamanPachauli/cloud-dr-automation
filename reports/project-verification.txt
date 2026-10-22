@@ -1,0 +1,30 @@
+CLOUD DISASTER RECOVERY AUTOMATION — VERIFICATION REPORT
+
+Project: cloud-dr-automation
+Environment: Windows + Docker Compose + LocalStack
+
+1. Application
+   - Flask application runs in a Docker container.
+   - Health endpoint: http://localhost:8082/health
+
+2. Monitoring
+   - Prometheus scrapes application metrics.
+   - Grafana dashboard created.
+   - Application health and request metrics visualized.
+
+3. Backup Storage
+   - S3-compatible bucket: cloud-dr-backups
+   - Test backup: dr-test/backup-test.json
+   - Verified test backup size: 75 bytes.
+
+4. Recovery Test
+   - Downloaded the test backup from the LocalStack S3 bucket.
+   - Copied the recovered file into the reports folder.
+   - Verified the recovered JSON content.
+
+5. Environment Limitation
+   - AWS services are simulated using LocalStack.
+   - No real AWS account or cloud deployment was used.
+   - Results demonstrate a local proof of concept, not production AWS recovery.
+
+Status: Local backup and recovery verification completed.
