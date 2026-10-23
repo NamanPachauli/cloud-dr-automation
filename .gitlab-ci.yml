@@ -4,15 +4,6 @@ stages:
   - build
   - test
 
-default:
-  image: docker:27-cli
-  services:
-    - name: docker:27-dind
-      alias: docker
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-
 validate:
   stage: validate
   image: python:3.12
@@ -22,13 +13,22 @@ validate:
 
 build:
   stage: build
+  image: docker:27-cli
+  services:
+    - name: docker:27-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
   script:
+    - docker compose version
     - docker compose build app
 
-health-check:
+test:
   stage: test
+  image: python:3.12
+  before_script:
+    - pip install -r app/requirements.txt
+    - pip install pytest requests
   script:
-    - docker compose up -d localstack app
-    - docker compose ps
-  after_script:
-    - docker compose down
+    - python -m pytest app/test_main.py -v

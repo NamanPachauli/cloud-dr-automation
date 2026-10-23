@@ -9,11 +9,18 @@ pipeline {
             }
         }
 
-        stage('Validate Project Files') {
+        stage('Validate Tools') {
             steps {
                 bat 'python --version'
                 bat 'docker --version'
                 bat 'docker compose version'
+            }
+        }
+
+        stage('Install Test Dependencies') {
+            steps {
+                bat 'python -m pip install -r app\\requirements.txt'
+                bat 'python -m pip install pytest requests'
             }
         }
 
@@ -23,16 +30,23 @@ pipeline {
             }
         }
 
-        stage('Run Health Check') {
+        stage('Start Services') {
             steps {
-                bat 'python scripts\\health_check.py'
+                bat 'docker compose up -d localstack app'
+            }
+        }
+
+        stage('Run Application Tests') {
+            steps {
+                bat 'set APP_TEST_URL=http://127.0.0.1:8082 && python -m pytest app\\test_main.py -v'
             }
         }
     }
 
     post {
         always {
-            echo 'Cloud DR pipeline finished. Review stage results before marking the build successful.'
+            bat 'docker compose down'
+            echo 'Review every stage result before considering this build successful.'
         }
     }
 }
