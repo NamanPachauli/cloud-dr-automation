@@ -38,7 +38,7 @@ pipeline {
 
         stage('Run Application Tests') {
             steps {
-                bat 'set APP_TEST_URL=http://127.0.0.1:8082 && python -m pytest app\\test_main.py -v'
+                bat 'set "APP_TEST_URL=http://127.0.0.1:8082" && python -m pytest app\\test_main.py -v'
             }
         }
     }
