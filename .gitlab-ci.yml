@@ -1,0 +1,34 @@
+
+stages:
+  - validate
+  - build
+  - test
+
+default:
+  image: docker:27-cli
+  services:
+    - name: docker:27-dind
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+
+validate:
+  stage: validate
+  image: python:3.12
+  script:
+    - python --version
+    - python -m compileall -q app scripts lambda
+
+build:
+  stage: build
+  script:
+    - docker compose build app
+
+health-check:
+  stage: test
+  script:
+    - docker compose up -d localstack app
+    - docker compose ps
+  after_script:
+    - docker compose down

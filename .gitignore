@@ -27,3 +27,11 @@ venv/
 
 # Local reports that may contain runtime data
 reports/automated-health-report.json
+
+
+# Generated Lambda deployment artifacts
+lambda/package/
+lambda/backup_validator.zip
+__pycache__/
+*.pyc
+.pytest_cache/

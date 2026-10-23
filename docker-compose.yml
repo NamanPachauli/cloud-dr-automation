@@ -6,11 +6,13 @@ services:
     ports:
       - "127.0.0.1:4567:4566"
     environment:
-      SERVICES: s3
+      SERVICES: s3,lambda,cloudwatch,logs,ec2,iam,sts
       AWS_DEFAULT_REGION: us-east-1
       PERSISTENCE: "1"
+      LAMBDA_EXECUTOR: docker
     volumes:
       - localstack_data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
     healthcheck:
       test: ["CMD", "bash", "-c", "curl -fsS http://localhost:4566/_localstack/health"]
       interval: 10s
@@ -62,7 +64,9 @@ services:
     ports:
       - "127.0.0.1:3001:3000"
     depends_on:
-      - prometheus      
+      - prometheus
+    restart: unless-stopped
 
 volumes:
   localstack_data:
+
